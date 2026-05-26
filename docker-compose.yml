@@ -14,7 +14,7 @@ services:
     build: ./frontend
     restart: unless-stopped
     ports:
-      - "8096:80"
+      - "8097:80"
     depends_on:
       backend:
         condition: service_healthy
