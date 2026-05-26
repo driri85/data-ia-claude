@@ -1,0 +1,55 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  # ── CI : vérifie le code sur chaque PR ──────────────────────────────────────
+  build:
+    name: Build images
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t dashboard-backend:${{ github.sha }} ./backend
+
+      - name: Build frontend image
+        run: docker build -t dashboard-frontend:${{ github.sha }} ./frontend
+
+  # ── Deploy : uniquement sur push main ───────────────────────────────────────
+  deploy:
+    name: Deploy
+    runs-on: self-hosted
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stop previous containers
+        run: docker compose down --remove-orphans || true
+
+      - name: Pull & start
+        run: docker compose up --build -d
+
+      - name: Health check
+        run: |
+          echo "Attente démarrage backend…"
+          for i in $(seq 1 12); do
+            STATUS=$(docker compose exec -T backend python -c \
+              "import urllib.request, sys; \
+               r = urllib.request.urlopen('http://localhost:8000/api/health'); \
+               sys.exit(0 if r.status == 200 else 1)" 2>/dev/null) && echo "OK" && exit 0
+            echo "Tentative $i/12…"
+            sleep 5
+          done
+          echo "Backend ne répond pas" && exit 1
+
+      - name: Clean old images
+        run: docker image prune -f
