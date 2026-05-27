@@ -1,5 +1,5 @@
-// URL de base de l'API FastAPI (dev : port 8000)
-const API = 'http://localhost:8000'
+// Dev: Vite proxy ou localhost:8000 direct. Prod: nginx proxie /api/* → backend:8000
+const API = import.meta.env.DEV ? 'http://localhost:8000' : ''
 
 export type StatItem = { label: string; value: number }
 
