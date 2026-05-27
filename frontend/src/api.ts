@@ -2,6 +2,13 @@
 const API = import.meta.env.DEV ? 'http://localhost:8000' : ''
 
 export type StatItem = { label: string; value: number }
+export type ClusterPoint = { bmi: number; s5: number; cluster: number }
+
+export async function getClusterData(): Promise<ClusterPoint[]> {
+  const r = await fetch(`${API}/api/cluster-data`)
+  if (!r.ok) throw new Error('Erreur API /cluster-data')
+  return r.json()
+}
 
 export async function getStats(): Promise<StatItem[]> {
   const r = await fetch(`${API}/api/stats`)

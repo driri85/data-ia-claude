@@ -72,6 +72,18 @@ def cluster(features: Features):
     return {"cluster": int(label)}
 
 
+@app.get("/api/cluster-data")
+def cluster_data():
+    if model_clustering is None:
+        return []
+    X = dataset[FEATURES]
+    labels = model_clustering.predict(X)
+    return [
+        {"bmi": round(float(row["bmi"]), 4), "s5": round(float(row["s5"]), 4), "cluster": int(labels[i])}
+        for i, row in X.iterrows()
+    ]
+
+
 @app.get("/api/stats")
 def stats():
     # Moyenne de la cible (progression du diabete) par tranche de BMI
