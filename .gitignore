@@ -9,3 +9,6 @@ frontend/dist/
 
 # Docker
 *.log
+
+
+*.ipynb
