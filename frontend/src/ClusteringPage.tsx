@@ -104,6 +104,38 @@ export default function ClusteringPage() {
         )}
       </section>
 
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="bg-gray-100 text-left">
+              <th className="border border-gray-200 px-3 py-2">Cluster</th>
+              <th className="border border-gray-200 px-3 py-2">Patients</th>
+              <th className="border border-gray-200 px-3 py-2">Progression moy.</th>
+              <th className="border border-gray-200 px-3 py-2">Profil</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { num: 0, color: '#2563eb', count: 125, target: 197, profil: 'Risque élevé — BMI, tension, cholestérol et LTG au-dessus de la moyenne' },
+              { num: 1, color: '#16a34a', count: 159, target: 160, profil: 'Risque modéré — tous les indicateurs proches de la moyenne' },
+              { num: 2, color: '#dc2626', count: 158, target: 108, profil: 'Risque faible — patients jeunes, BMI bas, bon profil lipidique (HDL élevé, LTG bas)' },
+            ].map(row => (
+              <tr key={row.num} className="hover:bg-gray-50">
+                <td className="border border-gray-200 px-3 py-2">
+                  <span className="inline-block rounded-full px-2 py-0.5 text-white text-xs font-bold" style={{ backgroundColor: row.color }}>
+                    Cluster {row.num}
+                  </span>
+                </td>
+                <td className="border border-gray-200 px-3 py-2 text-gray-600">{row.count}</td>
+                <td className="border border-gray-200 px-3 py-2 font-mono">{row.target}</td>
+                <td className="border border-gray-200 px-3 py-2 text-gray-600">{row.profil}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="mt-2 text-xs text-gray-400">Le modèle n'a jamais vu la variable cible pendant l'entraînement — la séparation sain/modéré/à risque émerge naturellement des caractéristiques biologiques.</p>
+      </div>
+
       <section>
         <h2 className="text-lg font-semibold">Assigner un cluster</h2>
         <form onSubmit={onSubmit} className="space-y-3">

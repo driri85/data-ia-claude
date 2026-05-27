@@ -67,6 +67,35 @@ export default function App() {
                 </BarChart>
               </ResponsiveContainer>
             )}
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 text-left">
+                    <th className="border border-gray-200 px-3 py-2">Tranche BMI</th>
+                    <th className="border border-gray-200 px-3 py-2">Patients</th>
+                    <th className="border border-gray-200 px-3 py-2">Progression moy.</th>
+                    <th className="border border-gray-200 px-3 py-2">Interprétation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { range: 'Très faible', count: 98,  value: 100, label: 'Risque très faible — BMI minimal, progression diabétique basse' },
+                    { range: 'Faible',      count: 188, value: 135, label: 'Risque faible — groupe le plus représenté, BMI sous la moyenne' },
+                    { range: 'Modéré',      count: 114, value: 192, label: 'Risque modéré — BMI au-dessus de la moyenne' },
+                    { range: 'Élevé',       count: 35,  value: 236, label: 'Risque élevé — surpoids marqué, progression forte' },
+                    { range: 'Très élevé',  count: 7,   value: 287, label: 'Risque très élevé — obésité, progression maximale (peu de données)' },
+                  ].map(row => (
+                    <tr key={row.range} className="hover:bg-gray-50">
+                      <td className="border border-gray-200 px-3 py-2 font-medium">{row.range}</td>
+                      <td className="border border-gray-200 px-3 py-2 text-gray-600">{row.count}</td>
+                      <td className="border border-gray-200 px-3 py-2 font-mono">{row.value}</td>
+                      <td className="border border-gray-200 px-3 py-2 text-gray-600">{row.label}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="mt-2 text-xs text-gray-400">Relation claire et monotone : plus le BMI augmente, plus la progression du diabète s'accélère.</p>
+            </div>
           </section>
 
           <section>
