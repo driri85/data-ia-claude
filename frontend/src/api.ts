@@ -20,3 +20,15 @@ export async function predire(
   if (!r.ok) throw new Error('Erreur API /predict')
   return r.json()
 }
+
+export async function clusterer(
+  features: Record<string, unknown>,
+): Promise<{ cluster: number }> {
+  const r = await fetch(`${API}/api/cluster`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(features),
+  })
+  if (!r.ok) throw new Error('Erreur API /cluster')
+  return r.json()
+}

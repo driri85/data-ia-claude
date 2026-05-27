@@ -18,9 +18,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Chargement du modele J2 une seule fois au demarrage (pas a chaque requete)
-MODEL_PATH = Path(__file__).parent / "model.pkl"
-model = joblib.load(MODEL_PATH) if MODEL_PATH.exists() else None
+# Chargement des modeles une seule fois au demarrage
+MODEL_REGRESSION_PATH = Path(__file__).parent / "model-regression.pkl"
+MODEL_CLUSTERING_PATH = Path(__file__).parent / "model-clustering.pkl"
+model = joblib.load(MODEL_REGRESSION_PATH) if MODEL_REGRESSION_PATH.exists() else None
+model_clustering = joblib.load(MODEL_CLUSTERING_PATH) if MODEL_CLUSTERING_PATH.exists() else None
 
 # Dataset charge une fois pour /api/stats
 _diabetes = load_diabetes(as_frame=True)
@@ -45,16 +47,29 @@ class Features(BaseModel):
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "model_loaded": model is not None}
+    return {
+        "status": "ok",
+        "model_regression_loaded": model is not None,
+        "model_clustering_loaded": model_clustering is not None,
+    }
 
 
 @app.post("/api/predict")
 def predict(features: Features):
     if model is None:
-        return {"error": "model.pkl manquant -- exportez-le depuis le notebook J2"}
+        return {"error": "model-regression.pkl manquant"}
     x = pd.DataFrame([features.model_dump()])[FEATURES]
     pred = model.predict(x)[0]
     return {"prediction": float(pred)}
+
+
+@app.post("/api/cluster")
+def cluster(features: Features):
+    if model_clustering is None:
+        return {"error": "model-clustering.pkl manquant"}
+    x = pd.DataFrame([features.model_dump()])[FEATURES]
+    label = model_clustering.predict(x)[0]
+    return {"cluster": int(label)}
 
 
 @app.get("/api/stats")
