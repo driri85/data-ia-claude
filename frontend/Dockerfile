@@ -5,7 +5,7 @@ RUN npm install -g npm@11
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install
 
 COPY . .
 RUN node node_modules/.bin/vite build
