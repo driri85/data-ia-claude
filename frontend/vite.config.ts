@@ -10,4 +10,9 @@ export default defineConfig({
     // Alternative au CORS : proxifier /api vers le backend en dev
     // proxy: { '/api': 'http://localhost:8000' },
   },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './src/test/setup.ts',
+  },
 })
